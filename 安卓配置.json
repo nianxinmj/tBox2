@@ -1,20 +1,5 @@
 {
 	"sites": [
-		{"key": "豆瓣",
-      		"name": "念心丨豆瓣",
-    		"type": 3,
-    		"searchable": 1,
-		"filterClass": "",
-		"firstClass": "",
-		"filterPlay": "",
-		"firstPlay": "",
-  		"ext": "https://ghp.ci/raw.githubusercontent.com/tt9912/tBox/refs/heads/main/js/douban.js",
-		"flagable": 0,
-		"filterPlayFileKeywords": "",
-		"keepPlayFileKeywords": "",
-		"selectedPlayer": "0"
-		},
-		
 		{
 		"key": "wogg",
 		"name": "玩偶哥哥",
@@ -128,20 +113,6 @@
 		"keepPlayFileKeywords": "",
 		"selectedPlayer": "1"
 	},{
-		"key": "qiyou",
-		"name": "奇优影院(直链)",
-		"type": 5,
-		"searchable": 1,
-		"filterClass": "",
-		"firstClass": "",
-		"filterPlay": "",
-		"firstPlay": "",
-		"ext": "https://ghp.ci/raw.githubusercontent.com/tt9912/tBox/refs/heads/main/js/qiyou.js",
-		"flagable": 0,
-		"filterPlayFileKeywords": "",
-		"keepPlayFileKeywords": "",
-		"selectedPlayer": "0"
-	},{
 		"key": "subaibai",
 		"name": "素白白影视(直链)",
 		"type": 5,
@@ -243,45 +214,6 @@
 		"filterPlay": "xlyun",
 		"firstPlay": "xlm3u8",
 		"ext": "https://api.xinlangapi.com/xinlangapi.php/provide/vod/",
-		"flagable": 0,
-		"filterPlayFileKeywords": "",
-		"keepPlayFileKeywords": ""
-	},{
-		"key": "apibdzy",
-		"name": "百度资源",
-		"type": 1,
-		"searchable": 0,
-		"filterClass": "电影,电视剧,综艺,动漫,邵氏电影,伦理片,体育赛事,资讯,电影资讯,明星资讯,预告",
-		"firstClass": "大陆剧,港澳剧,国产动漫",
-		"filterPlay": "bdyun",
-		"firstPlay": "bdm3u8",
-		"ext": "https://api.apibdzy.com/api.php/provide/vod/",
-		"flagable": 0,
-		"filterPlayFileKeywords": "",
-		"keepPlayFileKeywords": ""
-	},{
-		"key": "wolongzyw",
-		"name": "卧龙资源",
-		"type": 1,
-		"searchable": 1,
-		"filterClass": "电影片,连续剧,综艺片,动漫片,足球,伦理片,篮球,电影解说",
-		"firstClass": "国产剧,香港剧,国产动漫",
-		"filterPlay": "",
-		"firstPlay": "",
-		"ext": "https://collect.wolongzyw.com/api.php/provide/vod/",
-		"flagable": 0,
-		"filterPlayFileKeywords": "",
-		"keepPlayFileKeywords": ""
-	},{
-		"key": "suoniapi",
-		"name": "索尼资源",
-		"type": 1,
-		"searchable": 0,
-		"filterClass": "邵氏电影,伦理,写真热舞,西方伦理,日本伦理,影视解说,斯诺克,预告片,足球,篮球,体育赛事,两性课堂,韩国伦理,爽文短剧,电影,电视剧,综艺,动漫,港台三级",
-		"firstClass": "国产剧,港剧,国产动漫",
-		"filterPlay": "",
-		"firstPlay": "",
-		"ext": "https://suoniapi.com/api.php/provide/vod/",
 		"flagable": 0,
 		"filterPlayFileKeywords": "",
 		"keepPlayFileKeywords": ""
