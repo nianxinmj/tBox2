@@ -1,5 +1,21 @@
 {
-	"sites": [{
+	"sites": [
+		{"key": "豆瓣",
+      		"name": "念心丨豆瓣丨部分接口于互联网整理",
+    		"type": 3,
+    		"searchable": 1,
+		"filterClass": "",
+		"firstClass": "",
+		"filterPlay": "",
+		"firstPlay": "",
+  		"ext": "https://ghp.ci/raw.githubusercontent.com/tt9912/tBox/refs/heads/main/js/douban_open.js",
+		"flagable": 0,
+		"filterPlayFileKeywords": "",
+		"keepPlayFileKeywords": "",
+		"selectedPlayer": "0"
+		},
+		
+		{
 		"key": "wogg",
 		"name": "玩偶哥哥",
 		"type": 5,
