@@ -179,19 +179,6 @@
 		"filterPlayFileKeywords": "",
 		"keepPlayFileKeywords": ""
 	},{
-		"key": "ffzyapi",
-		"name": "非凡资源",
-		"type": 0,
-		"searchable": 1,
-		"filterClass": "伦理片,电影片,连续剧,综艺片,",
-		"firstClass": "国产剧,香港剧,韩国剧,国产动漫",
-		"filterPlay": "feifan",
-		"firstPlay": "",
-		"ext": "http://cj.ffzyapi.com/api.php/provide/vod/at/xml/",
-		"flagable": 0,
-		"filterPlayFileKeywords": "",
-		"keepPlayFileKeywords": ""
-	},{
 		"key": "hongniuzy2",
 		"name": "红牛资源",
 		"type": 1,
