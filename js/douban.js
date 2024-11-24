@@ -1,110 +1,81 @@
-var cheerio = require('cheerio')
-//npm install cheerio
+const axios = require('axios'); // HTTP 请求库
+const cheerio = require('cheerio'); // HTML 解析库
+const fs = require('fs'); // 文件操作
+const request = require('request'); // 用于下载图片
 
-// ES5 定义一个类
-// var Movie = function() {
-//     this.name = ''
-//     this.score = 0
-//     this.quote = ''
-//     this.ranking = 0
-//     this.coverUrl = ''
-// }
+// 基础 URL
+const BASE_URL = 'https://movie.douban.com/top250';
 
-// ES6 定义一个类
-class Movie {
-    constructor() {
-        // 分别是电影名/评分/引言/排名/封面图片链接
-        this.name = ''
-        this.score = 0
-        this.quote = ''
-        this.ranking = 0
-        this.coverUrl = ''
+// 爬取单个页面的数据
+async function fetchMoviesFromPage(url) {
+    try {
+        const response = await axios.get(url, {
+            headers: { 'User-Agent': 'Mozilla/5.0' }, // 模拟浏览器
+        });
+        const $ = cheerio.load(response.data); // 加载 HTML 内容
+        const movies = [];
+
+        // 遍历 .item 元素
+        $('.item').each((index, element) => {
+            const movie = {};
+            movie.name = $(element).find('.title').first().text(); // 电影名
+            movie.score = parseFloat($(element).find('.rating_num').text()); // 评分
+            movie.ratings = parseInt($(element).find('.star span').last().text().replace('人评价', '')); // 评价人数
+            movie.quote = $(element).find('.inq').text() || '无引言'; // 引言
+            movie.ranking = parseInt($(element).find('.pic em').text()); // 排名
+            movie.coverUrl = $(element).find('.pic img').attr('src'); // 封面图片链接
+            movies.push(movie);
+        });
+
+        return movies;
+    } catch (error) {
+        console.error(`请求失败: ${url}, 错误: ${error.message}`);
+        return [];
     }
 }
 
-// 引入自己写的模块的 log 函数
-var log = require('./mymodule').log
-var cached_url = require('./mymodule').cached
-
-var movieFromDiv = function(div) {
-    var e = cheerio.load(div)
-    // 创建一个电影类的实例并且获取数据
-    // 这些数据都是从 html 结构里面人工分析出来的
-    var movie = new Movie()
-    // 获取 .title 标签的 innerText
-    movie.name = e('.title').text()
-    movie.score = e('.rating_num').text()
-    movie.quote = e('.inq').text()
-
-    // 获取图片 url
-    var pic = e('.pic')
-    movie.ranking = pic.find('em').text()
-    movie.coverUrl = pic.find('img').attr('src')
-
-    // 添加评论人数
-    var ratings = e('.star').find('span').last().text()
-    movie.ratings = ratings.slice(0, -3)
-    return movie
-}
-
-// 数据缓存
-var moviesFromUrl = function(url) {
-    var body = cached_url(url)
-    // log('body 解码后', body)
-    // cheerio.load 用来把 HTML 文本解析为一个可以操作的 DOM
-    var e = cheerio.load(body)
-    // 可以使用选择器语法操作 cheerio 返回的对象
-    // 一共有 25 个 .item
-    var movieDivs = e('.item')
-    // log('debug', movieDivs[0])
-    // 循环处理 25 个 .item
-    var movies = []
-    for (var i = 0; i < movieDivs.length; i++) {
-        var div = movieDivs[i]
-        // 获取到 div 的 html 内容
-        // 然后扔给 movieFromDiv 函数来获取到一个 movie 对象
-        // div就是 html 内容
-        var m = movieFromDiv(div)
-        movies.push(m)
+// 爬取多页数据
+async function fetchAllMovies() {
+    const movies = [];
+    for (let start = 0; start < 250; start += 25) {
+        const url = `${BASE_URL}?start=${start}`;
+        console.log(`正在抓取: ${url}`);
+        const moviesFromPage = await fetchMoviesFromPage(url);
+        movies.push(...moviesFromPage); // 合并数组
+        await sleep(2000); // 请求间隔，防止被封
     }
-    return movies
+    return movies;
 }
 
-// 下载封面图
-var downloadCovers = function(movies) {
-    // 引入 request  用来下载图片用的库
-    var request = require('request')
-    var fs = require('fs')
-    for (var i = 0; i < movies.length; i++) {
-        var m = movies[i]
-        var url = m.coverUrl
-        var path = m.name.split('/')[0] + '.jpg'
-        // 下载图片并保存
-        // log('url ', typeof url, url)
-        request(url).pipe(fs.createWriteStream(path))
-    }
+// 保存数据到 JSON 文件
+function saveToJSON(filename, data) {
+    fs.writeFileSync(filename, JSON.stringify(data, null, 2), 'utf-8');
+    console.log(`数据已保存到文件: ${filename}`);
 }
 
-var __main = function() {
-    // 主函数
-    // https://movie.douban.com/top250?start=100
-    var movies = []
-    for (var i = 0; i < 10; i++) {
-        var start = i * 25
-        var url = 'https://movie.douban.com/top250?start=' + start
-        var ms = moviesFromUrl(url)
-        // 把 ms 数组里面的元素都添加到 movies 数组中
-        movies = movies.concat(ms)
-    }
-    // 引入自己的模块, 必须是 ./ 开头
-    var mymodule = require('./mymodule')
-    mymodule.save('豆瓣电影.json', movies)
-    // 下载封面图片
-    downloadCovers(movies)
+// 下载电影封面图片
+function downloadCovers(movies) {
+    const downloadDir = './covers';
+    if (!fs.existsSync(downloadDir)) fs.mkdirSync(downloadDir); // 如果目录不存在，则创建
+
+    movies.forEach((movie, index) => {
+        const sanitizedTitle = movie.name.replace(/[<>:"/\\|?*]+/g, '_'); // 处理特殊字符
+        const filePath = `${downloadDir}/${sanitizedTitle}.jpg`;
+        request(movie.coverUrl).pipe(fs.createWriteStream(filePath));
+        console.log(`下载封面: ${movie.coverUrl} -> ${filePath}`);
+    });
 }
 
-__main()
+// 延时函数
+function sleep(ms) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+}
 
-
-
-//
+// 主函数
+(async function main() {
+    console.log('开始爬取豆瓣电影 Top250...');
+    const movies = await fetchAllMovies(); // 获取所有电影数据
+    saveToJSON('douban_movies.json', movies); // 保存到 JSON 文件
+    downloadCovers(movies); // 下载封面图片
+    console.log('爬取完成！');
+})();
