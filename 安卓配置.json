@@ -1,7 +1,7 @@
 {
 	"sites": [
 		{"key": "豆瓣",
-      		"name": "念心丨豆瓣丨部分接口于互联网整理",
+      		"name": "念心丨豆瓣",
     		"type": 3,
     		"searchable": 1,
 		"filterClass": "",
